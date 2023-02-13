@@ -5,40 +5,62 @@ const { v4 } = require("uuid");
 const contactsPath = path.resolve("./db/contacts.json");
 
 async function listContacts() {
-  const data = await fs.readFile(contactsPath);
-  const contacts = JSON.parse(data);
-  return contacts;
+  try {
+    const data = await fs.readFile(contactsPath);
+    const contacts = JSON.parse(data);
+    return contacts;
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 async function getContactById(contactId) {
-  const contacts = await listContacts();
-  const contactById = contacts.find((c) => c.id === contactId.toString());
-  return contactById ? contactById : null;
+  try {
+    const contacts = await listContacts();
+    const contactById = contacts.find((c) => c.id === contactId.toString());
+    return contactById ? contactById : null;
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 async function updateContacts(contacts) {
-  await fs.writeFile(contactsPath, JSON.stringify(contacts));
+  try {
+    await fs.writeFile(contactsPath, JSON.stringify(contacts));
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 async function removeContact(contactId) {
-  const contacts = await listContacts();
-  const contactToRemove = contacts.findIndex(
-    (c) => c.id === contactId.toString()
-  );
-  if (contactToRemove === -1) {
-    return null;
+  try {
+    const contacts = await listContacts();
+    const contactToRemove = contacts.findIndex(
+      (c) => c.id === contactId.toString()
+    );
+    if (contactToRemove === -1) {
+      return null;
+    }
+    const newContacts = contacts.filter(
+      (_, index) => index !== contactToRemove
+    );
+    await updateContacts(newContacts);
+    return contacts[contactToRemove];
+  } catch (error) {
+    console.log(error.message);
   }
-  const newContacts = contacts.filter((_, index) => index !== contactToRemove);
-  await updateContacts(newContacts);
-  return contacts[contactToRemove];
 }
 
 async function addContact(name, email, phone) {
-  const contacts = await listContacts();
-  const newContact = { id: v4(), name, email, phone };
-  contacts.push(newContact);
-  await updateContacts(contacts);
-  return newContact;
+  try {
+    const contacts = await listContacts();
+    const newContact = { id: v4(), name, email, phone };
+    contacts.push(newContact);
+    await updateContacts(contacts);
+    return newContact;
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 module.exports = {
