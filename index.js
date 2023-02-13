@@ -16,8 +16,8 @@ const argv = program.opts();
 async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
-      const contacts = await contactsOperations.listContacts();
-      console.table(contacts);
+      const contactsList = await contactsOperations.listContacts();
+      console.table(contactsList);
       break;
 
     case "get":
@@ -28,6 +28,11 @@ async function invokeAction({ action, id, name, email, phone }) {
       console.log(contact);
       break;
 
+    case "remove":
+      const contactToRemove = await contactsOperations.removeContact(id);
+      console.log(contactToRemove);
+      break;
+
     case "add":
       const newContact = await contactsOperations.addContact(
         name,
@@ -35,11 +40,6 @@ async function invokeAction({ action, id, name, email, phone }) {
         phone
       );
       console.log(newContact);
-      break;
-
-    case "remove":
-      const contactToRemove = await contactsOperations.removeContact(id);
-      console.log(contactToRemove);
       break;
 
     default:
