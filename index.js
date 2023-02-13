@@ -1,4 +1,4 @@
-const contactsOperations = require("./db/contacts");
+const contactsOperations = require("./contacts");
 
 const { Command } = require("commander");
 const program = new Command();
@@ -16,8 +16,8 @@ const argv = program.opts();
 async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
-      const contactList = await contactsOperations.listContacts();
-      console.table(contactList);
+      const contacts = await contactsOperations.listContacts();
+      console.table(contacts);
       break;
 
     case "get":
@@ -38,11 +38,8 @@ async function invokeAction({ action, id, name, email, phone }) {
       break;
 
     case "remove":
-      const deleteContact = await contactsOperations.removeContact(id);
-      if (!deleteContact) {
-        throw new Error(`Contact with id=${id} was not found`);
-      }
-      console.log(deleteContact);
+      const contactToRemove = await contactsOperations.removeContact(id);
+      console.log(contactToRemove);
       break;
 
     default:
